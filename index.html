@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Making AI Real: Organizational AI Readiness Diagnostic</title>
+  <style>
+    /* ==========================================================================
+       Design Tokens & Editorial Palette (MIT-Inspired Navy, Crimson & Warm Paper)
+       ========================================================================== */
+    :root {
+      --bg-page: #F6F5F1;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F1EFEA;
+      --navy-950: #0B1120;
+      --navy-900: #111827;
+      --navy-800: #1E293B;
+      --crimson-700: #A31F34; /* MIT-inspired Cardinal Red */
+      --crimson-600: #BE123C;
+      --crimson-50: #FFF1F2;
+      --crimson-200: #FECDD3;
+      --amber-700: #B45309;
+      --amber-50: #FFFBEB;
+      --amber-200: #FDE68A;
+      --teal-700: #0F766E;
+      --teal-600: #0D9488;
+      --teal-50: #F0FDFA;
+      --teal-200: #99F6E4;
+      --emerald-700: #047857;
+      --emerald-600: #059669;
+      --emerald-50: #ECFDF5;
+      --emerald-200: #A7F3D0;
+      --slate-900: #0F172A;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748B;
+      --slate-400: #94A3B8;
+      --slate-300: #CBD5E1;
+      --slate-200: #E2E8F0;
+      --slate-100: #F1F5F9;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--slate-900);
+      line-height: 1.55;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==========================================================================
+       Top Wizard Header & Progress Bar
+       ========================================================================== */
+    .wizard-header {
+      background-color: var(--navy-900);
+      color: #FFFFFF;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background-color: var(--crimson-700);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      padding: 6px 9px;
+      border-radius: 6px;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: block;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--slate-400);
+      display: block;
+    }
+
+    .step-status {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: right;
+    }
+
+    .step-pill {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #F8FAFC;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    .running-score-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: #5EEAD4;
+      background: rgba(13, 148, 136, 0.18);
+      border: 1px solid rgba(94, 234, 212, 0.25);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background-color: var(--navy-800);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--crimson-700), #E11D48);
+      width: 0%;
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ==========================================================================
+       Main Wizard Stage & Smooth Step Transitions
+       ========================================================================== */
+    .wizard-main {
+      flex: 1;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 20px 56px;
+    }
+
+    .step-view {
+      animation: stepFadeIn 0.28s ease-out;
+    }
+
+    @keyframes stepFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 32px;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 22px 18px;
+      }
+    }
+
+    /* ==========================================================================
+       Step 0: Intro & Scoring Guide Styling
+       ========================================================================== */
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--crimson-700);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: var(--navy-900);
+      margin-bottom: 14px;
+    }
+
+    .hero-lead {
+      font-size: 16px;
+      color: var(--slate-700);
+      max-width: 760px;
+      margin-bottom: 24px;
+    }
+
+    /* 3-Stage Curve Strip */
+    .curve-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 720px) {
+      .curve-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .curve-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .curve-stage {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--crimson-700);
+      margin-bottom: 4px;
+    }
+
+    .curve-box h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy-900);
+      margin-bottom: 4px;
+    }
+
+    .curve-box p {
+      font-size: 13px;
+      color: var(--slate-600);
+    }
+
+    /* Scoring Guide Section */
+    .guide-panel {
+      background: var(--navy-900);
+      color: #F8FAFC;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+
+    .guide-panel h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+
+    .guide-panel > p {
+      font-size: 14px;
+      color: var(--slate-300);
+      margin-bottom: 18px;
+    }
+
+    .scale-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .scale-chip {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--slate-300);
+    }
+
+    .scale-chip.anchor {
+      background: var(--crimson-700);
+      color: #FFFFFF;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 860px) {
+      .examples-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .example-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .example-score {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 5px;
+      margin-bottom: 6px;
+    }
+
+    .ex-neg5 { background: rgba(225, 29, 72, 0.25); color: #FDA4AF; }
+    .ex-neg2 { background: rgba(217, 119, 6, 0.25); color: #FCD34D; }
+    .ex-zero { background: rgba(148, 163, 184, 0.25); color: #E2E8F0; }
+    .ex-pos3 { background: rgba(13, 148, 136, 0.25); color: #5EEAD4; }
+    .ex-pos5 { background: rgba(5, 150, 105, 0.28); color: #6EE7B7; }
+
+    .example-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .example-desc {
+      font-size: 12px;
+      color: var(--slate-300);
+      line-height: 1.4;
+    }
+
+    /* ==========================================================================
+       Steps 1–6: Single Question Lever View
+       ========================================================================== */
+    .lever-top-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lever-tag {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--crimson-700);
+      background: var(--crimson-50);
+      border: 1px solid var(--crimson-200);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .selected-status-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--slate-200);
+      background: var(--slate-100);
+      color: var(--slate-600);
+    }
+
+    .selected-status-badge.neg {
+      background: var(--crimson-50);
+      border-color: var(--crimson-200);
+      color: var(--crimson-700);
+    }
+
+    .selected-status-badge.neutral {
+      background: var(--slate-200);
+      border-color: var(--slate-300);
+      color: var(--slate-900);
+    }
+
+    .selected-status-badge.pos {
+      background: var(--teal-50);
+      border-color: var(--teal-200);
+      color: var(--teal-700);
+    }
+
+    .lever-heading {
+      font-size: clamp(22px, 3.2vw, 28px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--navy-900);
+      margin-bottom: 14px;
+    }
+
+    .question-banner {
+      background: var(--navy-900);
+      color: #FFFFFF;
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+
+    .question-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #FDA4AF;
+      margin-bottom: 6px;
+    }
+
+    .question-text {
+      font-size: clamp(17px, 2.3vw, 20px);
+      font-weight: 700;
+      line-height: 1.38;
+    }
+
+    .two-col-context {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 780px) {
+      .two-col-context {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .context-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .context-box h3 {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--slate-600);
+      margin-bottom: 8px;
+    }
+
+    .context-box p {
+      font-size: 14px;
+      color: var(--slate-700);
+    }
+
+    .benchmark-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .benchmark-list li {
+      font-size: 13.5px;
+      color: var(--slate-700);
+      padding-left: 12px;
+      border-left: 3px solid var(--crimson-700);
+    }
+
+    .benchmark-list strong {
+      color: var(--navy-900);
+    }
+
+    /* Discrete 11-Button Score Selector */
+    .rating-section {
+      border-top: 1px solid var(--slate-200);
+      padding-top: 22px;
+      margin-bottom: 22px;
+    }
+
+    .rating-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .rating-header label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .rating-hint {
+      font-size: 12px;
+      color: var(--slate-500);
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      gap: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .score-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    .score-btn {
+      height: 46px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--slate-300);
+      background: #FFFFFF;
+      color: var(--slate-900);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .score-btn:hover {
+      border-color: var(--navy-900);
+      background: var(--slate-100);
+      transform: translateY(-1px);
+    }
+
+    .score-btn:focus-visible {
+      outline: 3px solid rgba(163, 31, 52, 0.35);
+      outline-offset: 1px;
+    }
+
+    .score-btn.active-neg-strong {
+      background: var(--crimson-700);
+      border-color: var(--crimson-700);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(163, 31, 52, 0.3);
+      transform: scale(1.04);
+    }
+
+    .score-btn.active-neg-mild {
+      background: #D97706;
+      border-color: #B45309;
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+      transform: scale(1.04);
+    }
+
+    .score-btn.active-zero {
+      background: var(--slate-700);
+      border-color: var(--slate-900);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(51, 65, 85, 0.25);
+      transform: scale(1.04);
+    }
+
+    .score-btn.active-pos-mild {
+      background: var(--teal-600);
+      border-color: var(--teal-700);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+      transform: scale(1.04);
+    }
+
+    .score-btn.active-pos-strong {
+      background: var(--emerald-600);
+      border-color: var(--emerald-700);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+      transform: scale(1.04);
+    }
+
+    .anchor-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--slate-500);
+      margin-top: 8px;
+    }
+
+    .live-feedback {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--slate-100);
+      border-left: 4px solid var(--slate-400);
+      font-size: 14px;
+      color: var(--slate-700);
+    }
+
+    .live-feedback.neg {
+      background: var(--crimson-50);
+      border-left-color: var(--crimson-700);
+      color: #881337;
+    }
+
+    .live-feedback.neutral {
+      background: var(--slate-100);
+      border-left-color: var(--slate-600);
+      color: var(--slate-900);
+    }
+
+    .live-feedback.pos {
+      background: var(--teal-50);
+      border-left-color: var(--teal-600);
+      color: #115E59;
+    }
+
+    /* Reflection Textarea */
+    .reflection-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-900);
+      margin-bottom: 6px;
+    }
+
+    .reflection-section label span {
+      font-weight: 400;
+      color: var(--slate-500);
+    }
+
+    .reflection-textarea {
+      width: 100%;
+      min-height: 78px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--slate-300);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--slate-900);
+      resize: vertical;
+      transition: border-color 0.15s ease;
+    }
+
+    .reflection-textarea:focus {
+      outline: none;
+      border-color: var(--navy-900);
+    }
+
+    /* ==========================================================================
+       Navigation Footer Buttons
+       ========================================================================== */
+    .wizard-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--slate-200);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background: #FFFFFF;
+      border-color: var(--slate-300);
+      color: var(--slate-700);
+    }
+
+    .btn-secondary:hover {
+      background: var(--slate-100);
+      border-color: var(--slate-400);
+      color: var(--navy-900);
+    }
+
+    .btn-primary {
+      background: var(--crimson-700);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(163, 31, 52, 0.22);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #881337;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      background: var(--slate-300);
+      color: var(--slate-500);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .validation-msg {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--crimson-700);
+    }
+
+    /* ==========================================================================
+       Step 7: Final Executive Report
+       ========================================================================== */
+    .report-banner {
+      background: var(--navy-900);
+      color: #FFFFFF;
+      border-radius: var(--radius-md);
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 720px) {
+      .report-banner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .score-summary-box {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .score-summary-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-400);
+    }
+
+    .score-summary-number {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.05;
+      margin: 6px 0;
+    }
+
+    .score-summary-scale {
+      font-size: 12px;
+      color: var(--slate-400);
+    }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .tier-accel { background: var(--emerald-600); color: #FFFFFF; }
+    .tier-move  { background: var(--teal-600); color: #FFFFFF; }
+    .tier-found { background: var(--crimson-700); color: #FFFFFF; }
+
+    .tier-heading {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .tier-desc {
+      font-size: 14.5px;
+      color: var(--slate-300);
+    }
+
+    .section-block {
+      margin-bottom: 28px;
+    }
+
+    .section-block h3 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy-900);
+      margin-bottom: 4px;
+    }
+
+    .section-block > p {
+      font-size: 13.5px;
+      color: var(--slate-600);
+      margin-bottom: 14px;
+    }
+
+    .chart-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    .playbook-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 780px) {
+      .playbook-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .playbook-card {
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      background: #FFFFFF;
+    }
+
+    .playbook-card.priority-1 {
+      border-top: 4px solid var(--crimson-700);
+      background: var(--crimson-50);
+    }
+
+    .playbook-card.priority-2 {
+      border-top: 4px solid #D97706;
+      background: var(--amber-50);
+    }
+
+    .playbook-card.priority-3 {
+      border-top: 4px solid var(--teal-600);
+      background: var(--teal-50);
+    }
+
+    .pb-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--slate-600);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .playbook-card h4 {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--navy-900);
+      margin-bottom: 8px;
+    }
+
+    .playbook-card p {
+      font-size: 13.5px;
+      color: var(--slate-700);
+    }
+
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-item {
+      background: var(--bg-subtle);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+    }
+
+    .note-item-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-900);
+      margin-bottom: 4px;
+    }
+
+    .note-item p {
+      font-size: 13.5px;
+      color: var(--slate-700);
+    }
+
+    .report-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--slate-200);
+    }
+
+    .report-actions-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Print Styles */
+    @media print {
+      .wizard-header, .no-print {
+        display: none !important;
+      }
+      body {
+        background: #FFFFFF;
+      }
+      .wizard-main {
+        padding: 0;
+        max-width: 100%;
+      }
+      .card {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Progress Header -->
+  <header class="wizard-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-badge">MIT SLOAN</span>
+        <div>
+          <span class="brand-title">Making AI Real</span>
+          <span class="brand-sub">Organizational AI Readiness Diagnostic</span>
+        </div>
+      </div>
+
+      <div class="step-status">
+        <span id="running-score-pill" class="running-score-pill" style="display: none;">Score: 0</span>
+        <span id="step-pill" class="step-pill">Introduction</span>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+  </header>
+
+  <!-- Main Single-Step Viewport -->
+  <main class="wizard-main">
+    <div id="wizard-stage"></div>
+  </main>
+
+  <script>
+    /* ==========================================================================
+       6-Lever Data Model (George Westerman's MIT Framework)
+       ========================================================================== */
+    const LEVERS = [
+      {
+        id: 'ambition',
+        number: 1,
+        title: 'Shared Ambition',
+        question: 'How do we want to do business differently—and why is that better for our customers and our employees?',
+        why: 'Technology evolves exponentially, whereas organizations change much more slowly—and companies capture no real value from AI unless they change how they do business. If an AI initiative is framed purely around cost-cutting or replacing workers, employees will actively resist it.',
+        benchmarks: [
+          {
+            org: 'Rio Tinto',
+            detail: 'Framed a 15-year autonomous mining shift around "a mine where no miner will ever get hurt again"—not "an automated mine."'
+          },
+          {
+            org: 'Dentsu Creative',
+            detail: 'Defined direction as "intelligent storytelling," pairing creative heritage (motivating staff) with data intelligence (appealing to clients).'
+          },
+          {
+            org: 'Newport News Shipbuilding',
+            detail: 'Shifted from pushing speed without extra pay to an ambition to "make it easier to do good work" using AR and automation.'
+          }
+        ],
+        anchors: {
+          neg5: 'AI is framed solely around headcount reduction or vague tech hype; frontline staff actively resist it.',
+          zero: 'Leadership talks about AI efficiency, but teams lack a shared, inspiring customer or employee benefit.',
+          pos5: 'A compelling, human-centered ambition rallies employees, leaders, and customers around doing business better.'
+        },
+        fixAction: 'Rewrite your AI vision in one human-centered sentence answering "Why is this better for our customers and staff?" and share it with your teams this week.',
+        strengthAction: 'Use your clear Shared Ambition as a north star to prioritize high-impact workflows and align cross-functional sponsors.'
+      },
+      {
+        id: 'governance',
+        number: 2,
+        title: 'Governance',
+        question: 'How will we ensure safety and value—and is our governance acting as the steering wheel/accelerator rather than the brakes?',
+        why: 'Digital capabilities double every 18 to 24 months, making traditional 5-year plans obsolete on Day 1. Organizations need "directed emergence": reactive bureaucracy slows innovation to a halt, whereas agile governance manages risk while enabling rapid experiments.',
+        benchmarks: [
+          {
+            org: 'HCA Healthcare',
+            detail: 'Uses a fast-moving steering committee to evaluate risk, feasibility, and ROI at each gate (idea → pilot → scale) and audits models every 6 months for bias and drift.'
+          },
+          {
+            org: 'Dentsu Creative',
+            detail: 'Provided approved "clean tools" with clear usage policies ("wide swim lanes") paired with open office hours to review experiments safely.'
+          }
+        ],
+        anchors: {
+          neg5: 'Blanket bans or 6-month legal/IT approval queues stall even low-risk internal experiments.',
+          zero: 'Ad-hoc approvals; teams are unsure which AI tools are safe or how to get a pilot greenlit.',
+          pos5: 'Fast stage-gated reviews, safe sandboxes ("wide swim lanes"), and 6-month bias/drift audits accelerate safe innovation.'
+        },
+        fixAction: 'Replace blanket blocks with a safe sandbox of approved tools ("wide swim lanes") and a 2-week fast-track gate for low-risk pilots.',
+        strengthAction: 'Codify your agile stage-gate review process and formalize 6-month post-deployment audits for model drift and bias.'
+      },
+      {
+        id: 'value',
+        number: 3,
+        title: 'Value Capture',
+        question: 'How do we ensure change management happens so pilots actually scale and deliver value?',
+        why: 'Only 1 in 10 to 1 in 15 successful AI pilots ever scale across an enterprise. Pilots stall when early enthusiasts test a tool in isolation, while everyday frontline workers—who were never consulted—resist changing their daily routines.',
+        benchmarks: [
+          {
+            org: 'HCA Healthcare',
+            detail: 'Co-designed nurse shift handoffs with nurses—cutting handoff time from 50 minutes to 12 minutes with a 95% quality gain.'
+          },
+          {
+            org: 'Dentsu Creative',
+            detail: 'Used "middle-out" scaling: IT identified recurring grassroots employee workflows (proposals, budgeting) and turned them into standardized enterprise tools.'
+          }
+        ],
+        anchors: {
+          neg5: 'Pilots sit in an "innovation theater" graveyard; frontline staff reject tools built without their input.',
+          zero: 'A few isolated pilots show promise, but executive sponsorship and daily workflow integration are inconsistent.',
+          pos5: 'Frontline users co-design solutions early, sponsors back adoption, and recurring grassroots wins scale middle-out.'
+        },
+        fixAction: 'Audit stalled pilots and bring 3–5 everyday frontline end-users into the design room this week before building further.',
+        strengthAction: 'Have IT and operations identify recurring grassroots employee AI workflows and standardize them enterprise-wide.'
+      },
+      {
+        id: 'technology',
+        number: 4,
+        title: 'Technology — Data & Systems',
+        question: 'Is our data clean, and are our systems integrated enough for our priority use cases?',
+        why: 'AI models cannot deliver reliable results on fragmented, messy data—yet trying to clean every database across the entire enterprise before launching anything ("boiling the ocean") guarantees paralysis.',
+        benchmarks: [
+          {
+            org: 'Incremental Slice Cleanup',
+            detail: 'Clean and connect only the specific data pipelines needed for the immediate priority use case, then expand piece by piece.'
+          },
+          {
+            org: 'Rio Tinto & HCA Healthcare',
+            detail: 'Centralized core operational data streams—Rio Tinto\'s remote operations center and HCA\'s unified clinical records—to power real-time automation and early sepsis detection.'
+          }
+        ],
+        anchors: {
+          neg5: 'Critical data is trapped in silos or teams are frozen in a multi-year "boil the ocean" data cleanup before launching.',
+          zero: 'Data is usable for backward-looking reports, but requires heavy manual stitching for live AI workflows.',
+          pos5: 'Priority operational data streams are clean, unified, and expanded incrementally use-case by use-case.'
+        },
+        fixAction: 'Stop trying to fix all enterprise data at once—isolate the single data bottleneck blocking your #1 priority use case and clean just that slice.',
+        strengthAction: 'Leverage your unified operational data streams to connect real-time signals into high-value decision workflows.'
+      },
+      {
+        id: 'culture',
+        number: 5,
+        title: 'Culture',
+        question: 'Is our culture ready for speed, experimentation, and data-driven debate?',
+        why: 'A culture built around perfectionism—where teams spend six months polishing a slide deck and face career penalties if an experiment fails—cannot operate at the speed of AI.',
+        benchmarks: [
+          {
+            org: 'Four Cultural Shifts',
+            detail: 'Reward speed over perfection (1–2 week learning sprints), restlessness with the status quo, cross-boundary collaboration (including AI teammates), and empathy ("should we do this?").'
+          },
+          {
+            org: 'Dentsu Creative',
+            detail: 'Hosted open peer office hours where employees shared both successes and lessons learned, building social recognition ("street cred") around smart experimentation.'
+          }
+        ],
+        anchors: {
+          neg5: 'Perfectionism and fear of failure dominate; teams spend months polishing decks instead of testing.',
+          zero: 'Pocketed experimentation exists, but legacy habits and siloed decision-making slow down learning.',
+          pos5: 'Two-week learning sprints, open peer sharing, and empathetic debate ("should we do this?") are standard practice.'
+        },
+        fixAction: 'Launch weekly 30-minute peer office hours where teams share both AI wins and failed experiments without career penalty.',
+        strengthAction: 'Channel your high-velocity learning culture into cross-functional 2-week sprints tackling core customer workflows.'
+      },
+      {
+        id: 'talent',
+        number: 6,
+        title: 'Talent',
+        question: 'Do our people have the right skills, how do we help them build them, and what are we telling them about their careers?',
+        why: 'When leaders stay silent on how AI will affect jobs, employees assume layoffs are coming and disengage. Without proper training, professionals also misuse AI—such as blindly trusting fabricated case law or outputs.',
+        benchmarks: [
+          {
+            org: 'Rio Tinto & Dentsu Creative',
+            detail: 'Explicitly reassured staff that the goal is evolving roles rather than mass layoffs, backed by structured reskilling paths.'
+          },
+          {
+            org: 'Cresta & Harvey',
+            detail: 'Deployed domain-specific AI—Cresta for real-time call-center coaching (boosting rep satisfaction and retention) and Harvey to remove repetitive legal contract drudgery.'
+          }
+        ],
+        anchors: {
+          neg5: 'Leadership is silent on job impact (breeding fear) and staff lack practical training to verify AI outputs.',
+          zero: 'Generic AI tools are available, but role-specific upskilling and career transition paths remain unclear.',
+          pos5: 'Clear career evolution commitments, critical AI verification skills, and domain-specific tools elevate human judgment.'
+        },
+        fixAction: 'Communicate explicitly how key roles will evolve (not just vanish) and run hands-on training on verifying AI outputs and spotting hallucinations.',
+        strengthAction: 'Pair your skilled teams with domain-specific AI assistants to eliminate repetitive paperwork and elevate human judgment.'
+      }
+    ];
+
+    /* ==========================================================================
+       Wizard State
+       Steps: 0 = Intro, 1..6 = Levers 1..6, 7 = Final Assessment Report
+       ========================================================================== */
+    let currentStep = 0;
+    const responses = {};
+    LEVERS.forEach(l => {
+      responses[l.id] = { score: null, note: '' };
+    });
+
+    /* ==========================================================================
+       Navigation & Progress Helpers
+       ========================================================================== */
+    function goToStep(stepIndex) {
+      currentStep = Math.max(0, Math.min(7, stepIndex));
+      renderCurrentStep();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateHeader() {
+      const stepPill = document.getElementById('step-pill');
+      const scorePill = document.getElementById('running-score-pill');
+      const progressFill = document.getElementById('progress-fill');
+
+      const totalScore = LEVERS.reduce((sum, l) => sum + (responses[l.id].score || 0), 0);
+      const ratedCount = LEVERS.filter(l => responses[l.id].score !== null).length;
+      const fmtScore = totalScore > 0 ? `+${totalScore}` : `${totalScore}`;
+
+      if (currentStep === 0) {
+        stepPill.textContent = 'Step 0 · Guide';
+        scorePill.style.display = 'none';
+        progressFill.style.width = '8%';
+      } else if (currentStep >= 1 && currentStep <= 6) {
+        stepPill.textContent = `Lever ${currentStep} of 6`;
+        scorePill.style.display = 'inline-block';
+        scorePill.textContent = `Running Score: ${fmtScore} (${ratedCount}/6)`;
+        // Progress from 20% at step 1 to 90% at step 6
+        const pct = 12 + (currentStep / 6) * 78;
+        progressFill.style.width = `${pct}%`;
+      } else {
+        stepPill.textContent = 'Final Report';
+        scorePill.style.display = 'inline-block';
+        scorePill.textContent = `Total Score: ${fmtScore} / +30`;
+        progressFill.style.width = '100%';
+      }
+    }
+
+    /* ==========================================================================
+       Step 0: Intro & 11-Point Scoring Scale Guide
+       ========================================================================== */
+    function renderIntroStep() {
+      const allScores = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+
+      return `
+        <section class="step-view card">
+          <span class="eyebrow">MIT Sloan Transformation Framework · George Westerman</span>
+          <h1 class="hero-title">Making AI Real: Organizational AI Readiness Diagnostic</h1>
+          <p class="hero-lead">
+            Digital capabilities double every 18–24 months, making rigid 5-year plans obsolete on Day 1. Winning organizations practice <strong>“Directed Emergence”</strong>—setting a clear destination and learning their way forward in 1- to 2-week sprints across six organizational levers.
+          </p>
+
+          <!-- Three Stages of AI Capability -->
+          <div class="curve-grid">
+            <div class="curve-box">
+              <div class="curve-stage">Stage 01</div>
+              <h3>Grassroots Experimentation</h3>
+              <p>Safe, approved tools channel frontline curiosity into early learning.</p>
+            </div>
+            <div class="curve-box">
+              <div class="curve-stage">Stage 02</div>
+              <h3>Defined Task Augmentation</h3>
+              <p>Human-in-the-loop pilots prove measurable quality and speed gains.</p>
+            </div>
+            <div class="curve-box">
+              <div class="curve-stage">Stage 03</div>
+              <h3>Enterprise Transformation</h3>
+              <p>Redesigned workflows and business models capture lasting value.</p>
+            </div>
+          </div>
+
+          <!-- Explicit 11-Point Scale Guide -->
+          <div class="guide-panel">
+            <h2>How to Score: Choose Any Whole Number from -5 to +5</h2>
+            <p>
+              You will evaluate <strong>one lever per page</strong> across 6 screens. Select <strong>any integer along the 11-point scale</strong> below—where <strong>-5</strong>, <strong>0</strong>, and <strong>+5</strong> serve as anchor points:
+            </p>
+
+            <div class="scale-preview">
+              ${allScores.map(n => {
+                const label = n > 0 ? `+${n}` : `${n}`;
+                const isAnchor = n === -5 || n === 0 || n === 5;
+                return `<span class="scale-chip ${isAnchor ? 'anchor' : ''}">${label}${isAnchor ? ' (Anchor)' : ''}</span>`;
+              }).join('')}
+            </div>
+
+            <div class="examples-grid">
+              <div class="example-card">
+                <span class="example-score ex-neg5">-5 · Anchor</span>
+                <div class="example-title">Severe Bottleneck</div>
+                <div class="example-desc">Blanket AI bans, active staff resistance, or trapped siloed data blocks progress.</div>
+              </div>
+              <div class="example-card">
+                <span class="example-score ex-neg2">-2 · Example</span>
+                <div class="example-title">Noticeable Friction</div>
+                <div class="example-desc">Slow committee reviews or unclear career messaging creates hesitation and delays.</div>
+              </div>
+              <div class="example-card">
+                <span class="example-score ex-zero">0 · Anchor</span>
+                <div class="example-title">Neutral / Mixed</div>
+                <div class="example-desc">Isolated experiments exist, but this lever neither accelerates nor blocks AI today.</div>
+              </div>
+              <div class="example-card">
+                <span class="example-score ex-pos3">+3 · Example</span>
+                <div class="example-title">Solid Enabler</div>
+                <div class="example-desc">Clear guardrails and active sponsors help pilots move forward, with room to mature.</div>
+              </div>
+              <div class="example-card">
+                <span class="example-score ex-pos5">+5 · Anchor</span>
+                <div class="example-title">Major Accelerator</div>
+                <div class="example-desc">Human-centered vision, rapid sprints, and clean data propel enterprise-wide scale.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-footer" style="border-top: none; padding-top: 0; margin-top: 8px;">
+            <span style="font-size: 13px; color: var(--slate-500);">Takes ~3–5 minutes · 6 questions total</span>
+            <button type="button" class="btn btn-primary" onclick="goToStep(1)">
+              Start Assessment &rarr;
+            </button>
+          </div>
+        </section>
+      `;
+    }
+
+    /* ==========================================================================
+       Steps 1–6: Single Lever Question Page
+       ========================================================================== */
+    function getLiveInterpretation(lever, score) {
+      if (score === null) {
+        return {
+          badgeText: 'Not Rated Yet',
+          badgeTone: '',
+          boxTone: '',
+          message: 'Select any whole number from -5 (Major Bottleneck) to +5 (Major Accelerator) to unlock the next step.'
+        };
+      }
+      const fmt = score > 0 ? `+${score}` : `${score}`;
+      if (score === -5) {
+        return {
+          badgeText: `${fmt} · Major Bottleneck`,
+          badgeTone: 'neg',
+          boxTone: 'neg',
+          message: lever.anchors.neg5
+        };
+      }
+      if (score >= -4 && score <= -1) {
+        return {
+          badgeText: `${fmt} · Net Friction`,
+          badgeTone: 'neg',
+          boxTone: 'neg',
+          message: `Creates friction and slows momentum. Closer to 0 means mixed results; closer to -5 mirrors: “${lever.anchors.neg5}”`
+        };
+      }
+      if (score === 0) {
+        return {
+          badgeText: '0 · Neutral / Mixed',
+          badgeTone: 'neutral',
+          boxTone: 'neutral',
+          message: lever.anchors.zero
+        };
+      }
+      if (score >= 1 && score <= 4) {
+        return {
+          badgeText: `${fmt} · Net Enabler`,
+          badgeTone: 'pos',
+          boxTone: 'pos',
+          message: `Actively supports progress with room to grow. At +5, this looks like: “${lever.anchors.pos5}”`
+        };
+      }
+      return {
+        badgeText: '+5 · Major Accelerator',
+        badgeTone: 'pos',
+        boxTone: 'pos',
+        message: lever.anchors.pos5
+      };
+    }
+
+    function getActiveBtnClass(val, isSelected) {
+      if (!isSelected) return 'score-btn';
+      if (val <= -4) return 'score-btn active-neg-strong';
+      if (val < 0) return 'score-btn active-neg-mild';
+      if (val === 0) return 'score-btn active-zero';
+      if (val <= 3) return 'score-btn active-pos-mild';
+      return 'score-btn active-pos-strong';
+    }
+
+    function renderLeverStep(stepIndex) {
+      const lever = LEVERS[stepIndex - 1];
+      const current = responses[lever.id];
+      const interp = getLiveInterpretation(lever, current.score);
+      const scores = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+      const isLastLever = stepIndex === 6;
+      const nextLabel = isLastLever ? 'View Final Assessment &rarr;' : 'Next Lever &rarr;';
+
+      return `
+        <section class="step-view card">
+          <div class="lever-top-meta">
+            <span class="lever-tag">Lever ${lever.number} of 6</span>
+            <span id="status-badge" class="selected-status-badge ${interp.badgeTone}">${interp.badgeText}</span>
+          </div>
+
+          <h1 class="lever-heading">${lever.title}</h1>
+
+          <!-- Diagnostic Question -->
+          <div class="question-banner">
+            <div class="question-label">Core Leadership Question</div>
+            <div class="question-text">“${lever.question}”</div>
+          </div>
+
+          <!-- Why It Matters & Real-World Benchmarks -->
+          <div class="two-col-context">
+            <div class="context-box">
+              <h3>Why Should We Ask It?</h3>
+              <p>${lever.why}</p>
+            </div>
+
+            <div class="context-box">
+              <h3>Real-World Benchmarks</h3>
+              <ul class="benchmark-list">
+                ${lever.benchmarks.map(b => `
+                  <li><strong>${b.org}:</strong> ${b.detail}</li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Interactive 11-Button Discrete Score Selector -->
+          <div class="rating-section">
+            <div class="rating-header">
+              <label>Rate Your Organization (-5 to +5)</label>
+              <span class="rating-hint">Select any whole number along the scale</span>
+            </div>
+
+            <div class="score-grid" role="group" aria-label="Score for ${lever.title}">
+              ${scores.map(val => {
+                const label = val > 0 ? `+${val}` : `${val}`;
+                const selected = current.score === val;
+                return `
+                  <button
+                    type="button"
+                    class="${getActiveBtnClass(val, selected)}"
+                    aria-pressed="${selected}"
+                    onclick="handleScoreSelect('${lever.id}', ${val})"
+                  >
+                    ${label}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="anchor-labels">
+              <span>-5 Major Bottleneck</span>
+              <span>0 Neutral</span>
+              <span>+5 Major Accelerator</span>
+            </div>
+
+            <div id="live-feedback" class="live-feedback ${interp.boxTone}">
+              ${interp.message}
+            </div>
+          </div>
+
+          <!-- Optional Workshop Reflection Note -->
+          <div class="reflection-section">
+            <label for="reflection-input">
+              Workshop Reflection Note <span>(Optional — capture specific team observations, bottlenecks, or actions)</span>
+            </label>
+            <textarea
+              id="reflection-input"
+              class="reflection-textarea"
+              placeholder="Write any specific notes for ${lever.title}..."
+              oninput="handleNoteChange('${lever.id}', this.value)"
+            >${escapeHtml(current.note)}</textarea>
+          </div>
+
+          <!-- Navigation Footer -->
+          <div class="wizard-footer">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(${stepIndex - 1})">
+              &larr; Previous
+            </button>
+
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end;">
+              <span id="next-hint" class="validation-msg" style="${current.score !== null ? 'display:none;' : ''}">
+                Select a score above to continue
+              </span>
+              <button
+                id="next-btn"
+                type="button"
+                class="btn btn-primary"
+                ${current.score === null ? 'disabled' : ''}
+                onclick="goToStep(${stepIndex + 1})"
+              >
+                ${nextLabel}
+              </button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function handleScoreSelect(leverId, val) {
+      responses[leverId].score = val;
+      const lever = LEVERS.find(l => l.id === leverId);
+      const interp = getLiveInterpretation(lever, val);
+
+      // Update status badge
+      const badge = document.getElementById('status-badge');
+      badge.className = `selected-status-badge ${interp.badgeTone}`;
+      badge.textContent = interp.badgeText;
+
+      // Update live feedback box
+      const feedback = document.getElementById('live-feedback');
+      feedback.className = `live-feedback ${interp.boxTone}`;
+      feedback.textContent = interp.message;
+
+      // Update score buttons
+      const scores = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+      const buttons = document.querySelectorAll('.score-grid .score-btn');
+      buttons.forEach((btn, idx) => {
+        const bVal = scores[idx];
+        const selected = bVal === val;
+        btn.className = getActiveBtnClass(bVal, selected);
+        btn.setAttribute('aria-pressed', selected);
+      });
+
+      // Enable Next button & hide helper hint
+      const nextBtn = document.getElementById('next-btn');
+      const nextHint = document.getElementById('next-hint');
+      if (nextBtn) nextBtn.disabled = false;
+      if (nextHint) nextHint.style.display = 'none';
+
+      updateHeader();
+    }
+
+    function handleNoteChange(leverId, text) {
+      responses[leverId].note = text;
+    }
+
+    /* ==========================================================================
+       Step 7: Final Assessment Report
+       ========================================================================== */
+    function renderReportStep() {
+      const totalScore = LEVERS.reduce((sum, l) => sum + (responses[l.id].score || 0), 0);
+      const fmtTotal = totalScore > 0 ? `+${totalScore}` : `${totalScore}`;
+
+      // Determine Strategic Tier
+      let tierBadgeClass = 'tier-move';
+      let tierLabel = 'Positioned to Move (0 to +14)';
+      let tierHeading = 'Ahead of Most Peers — Advance While Fixing Weak Spots';
+      let tierDesc = 'You have a solid foundation to move forward. Do not wait for perfection across every lever—push bounded, user-led 2-week pilots forward while systematically unblocking your lowest-scoring levers in parallel.';
+      let scoreColor = '#5EEAD4';
+
+      if (totalScore >= 15) {
+        tierBadgeClass = 'tier-accel';
+        tierLabel = 'AI-Ready Accelerators (+15 to +30)';
+        tierHeading = 'Strong Alignment — Scale & Reinvent Business Models';
+        tierDesc = 'Your organization demonstrates strong alignment across ambition, governance, culture, and systems. Avoid stalling in isolated pilots—focus on enterprise-wide scaling, middle-out workflow standardization, and AI-enabled business model innovation.';
+        scoreColor = '#6EE7B7';
+      } else if (totalScore < 0) {
+        tierBadgeClass = 'tier-found';
+        tierLabel = 'Foundation First (Below 0)';
+        tierHeading = 'Pause Broad Scaling — Unblock Core Bottlenecks First';
+        tierDesc = 'Accelerating broad AI rollouts right now risks climbing the wrong mountain—or stalling due to frontline resistance, governance brakes, or fragmented data. Pause broad scaling and fix your 1–2 lowest-scoring levers over the next 30 days.';
+        scoreColor = '#FDA4AF';
+      }
+
+      // Sort levers to find lowest bottlenecks and highest strength
+      const sortedByScore = [...LEVERS].sort((a, b) => (responses[a.id].score || 0) - (responses[b.id].score || 0));
+      const lowest1 = sortedByScore[0];
+      const lowest2 = sortedByScore[1];
+      const highest = sortedByScore[sortedByScore.length - 1];
+      const fmt = s => (s > 0 ? `+${s}` : `${s}`);
+
+      // Captured notes
+      const notesEntered = LEVERS.filter(l => responses[l.id].note && responses[l.id].note.trim().length > 0);
+
+      return `
+        <section class="step-view card">
+          <span class="eyebrow">Executive Diagnostic Report</span>
+          <h1 class="hero-title" style="margin-bottom: 20px;">Organizational AI Readiness Assessment</h1>
+
+          <!-- Total Score & Strategic Tier Banner -->
+          <div class="report-banner">
+            <div class="score-summary-box">
+              <div class="score-summary-label">Total Readiness Score</div>
+              <div class="score-summary-number" style="color: ${scoreColor};">${fmtTotal}</div>
+              <div class="score-summary-scale">Scale: -30 to +30</div>
+            </div>
+
+            <div>
+              <span class="tier-badge ${tierBadgeClass}">${tierLabel}</span>
+              <h2 class="tier-heading">${tierHeading}</h2>
+              <p class="tier-desc">${tierDesc}</p>
+            </div>
+          </div>
+
+          <!-- Diverging Horizontal Bar Chart (-5 to +5) -->
+          <div class="section-block">
+            <h3>6-Lever Readiness Profile (-5 to +5)</h3>
+            <p>Bottlenecks extend left of zero; organizational accelerators extend right of zero.</p>
+            <div class="chart-card">
+              ${buildDivergingChartSvg()}
+            </div>
+          </div>
+
+          <!-- Tailored 30-Day Action Playbook -->
+          <div class="section-block">
+            <h3>Tailored 30-Day Leadership Playbook</h3>
+            <p>Prioritized commitments based on your lowest-scoring bottlenecks and top organizational strength.</p>
+
+            <div class="playbook-grid">
+              <div class="playbook-card priority-1">
+                <span class="pb-tag">Priority #1 Bottleneck to Fix</span>
+                <h4>${lowest1.number}. ${lowest1.title} (${fmt(responses[lowest1.id].score)})</h4>
+                <p>${lowest1.fixAction}</p>
+              </div>
+
+              <div class="playbook-card priority-2">
+                <span class="pb-tag">Priority #2 Secondary Friction</span>
+                <h4>${lowest2.number}. ${lowest2.title} (${fmt(responses[lowest2.id].score)})</h4>
+                <p>${lowest2.fixAction}</p>
+              </div>
+
+              <div class="playbook-card priority-3">
+                <span class="pb-tag">Sprint &amp; Strength Commitment</span>
+                <h4>Leverage ${highest.title} (${fmt(responses[highest.id].score)})</h4>
+                <p>${highest.strengthAction}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Workshop Reflection Notes (if any entered) -->
+          ${notesEntered.length > 0 ? `
+            <div class="section-block">
+              <h3>Your Workshop Reflection Notes</h3>
+              <p>Observations recorded during your diagnostic walkthrough.</p>
+              <div class="notes-list">
+                ${notesEntered.map(l => `
+                  <div class="note-item">
+                    <div class="note-item-header">
+                      <span>Lever ${l.number}: ${l.title}</span>
+                      <span>Score: ${fmt(responses[l.id].score)}</span>
+                    </div>
+                    <p>${escapeHtml(responses[l.id].note.trim())}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Report Footer Actions -->
+          <div class="report-actions no-print">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(6)">
+              &larr; Edit Answers
+            </button>
+
+            <div class="report-actions-group">
+              <button type="button" class="btn btn-secondary" onclick="resetWizard()">
+                Reset Diagnostic
+              </button>
+              <button type="button" class="btn btn-primary" onclick="window.print()">
+                Print / Save PDF
+              </button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function buildDivergingChartSvg() {
+      const width = 820;
+      const rowH = 44;
+      const topPad = 28;
+      const botPad = 14;
+      const height = topPad + LEVERS.length * rowH + botPad;
+      const labelW = 225;
+      const rightPad = 45;
+      const plotW = width - labelW - rightPad;
+      const centerX = labelW + plotW / 2;
+      const halfW = plotW / 2;
+      const ticks = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+
+      const grid = ticks.map(t => {
+        const x = centerX + (t / 5) * halfW;
+        const isZero = t === 0;
+        const label = t > 0 ? `+${t}` : `${t}`;
+        return `
+          <line x1="${x}" y1="${topPad - 6}" x2="${x}" y2="${height - botPad}"
+                stroke="${isZero ? '#0F172A' : '#CBD5E1'}"
+                stroke-width="${isZero ? '2' : '1'}"
+                ${isZero ? '' : 'stroke-dasharray="3,3"'} />
+          <text x="${x}" y="${topPad - 12}" text-anchor="middle" font-size="11"
+                font-weight="${isZero ? '800' : '600'}"
+                fill="${isZero ? '#0F172A' : '#64748B'}">${label}</text>
+        `;
+      }).join('');
+
+      const rows = LEVERS.map((lever, idx) => {
+        const score = responses[lever.id].score || 0;
+        const y = topPad + idx * rowH;
+        const barY = y + 10;
+        const barH = 22;
+        const barW = (Math.abs(score) / 5) * halfW;
+
+        let barX = centerX;
+        let fill = '#64748B';
+        let textColor = '#334155';
+        let labelX = centerX + 10;
+        let anchor = 'start';
+
+        if (score < 0) {
+          barX = centerX - barW;
+          fill = score <= -4 ? '#A31F34' : '#D97706';
+          textColor = score <= -4 ? '#A31F34' : '#B45309';
+          labelX = barX - 8;
+          anchor = 'end';
+        } else if (score > 0) {
+          barX = centerX;
+          fill = score >= 4 ? '#059669' : '#0D9488';
+          textColor = score >= 4 ? '#047857' : '#0F766E';
+          labelX = centerX + barW + 8;
+          anchor = 'start';
+        }
+
+        const fmt = score > 0 ? `+${score}` : `${score}`;
+
+        return `
+          <g>
+            <text x="${labelW - 14}" y="${y + 25}" text-anchor="end" font-size="13" font-weight="700" fill="#111827">
+              ${lever.number}. ${lever.title}
+            </text>
+            ${score !== 0
+              ? `<rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="5" fill="${fill}" />`
+              : `<circle cx="${centerX}" cy="${barY + barH / 2}" r="4.5" fill="#475569" />`
+            }
+            <text x="${labelX}" y="${y + 25}" text-anchor="${anchor}" font-size="13" font-weight="800" fill="${textColor}">
+              ${fmt}
+            </text>
+          </g>
+        `;
+      }).join('');
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" style="width: 100%; min-width: 600px; height: auto; display: block;">
+          ${grid}
+          ${rows}
+        </svg>
+      `;
+    }
+
+    function resetWizard() {
+      LEVERS.forEach(l => {
+        responses[l.id] = { score: null, note: '' };
+      });
+      goToStep(0);
+    }
+
+    function renderCurrentStep() {
+      updateHeader();
+      const stage = document.getElementById('wizard-stage');
+      if (currentStep === 0) {
+        stage.innerHTML = renderIntroStep();
+      } else if (currentStep >= 1 && currentStep <= 6) {
+        stage.innerHTML = renderLeverStep(currentStep);
+      } else {
+        stage.innerHTML = renderReportStep();
+      }
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Boot Wizard on Step 0
+    renderCurrentStep();
+  </script>
+</body>
+</html>
