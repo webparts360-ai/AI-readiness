@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Transformation Catalyst Talent Discovery Assessment">
+  <title>AI Transformation Catalyst Assessment</title>
+
+  <style>
+    :root {
+      --navy: #0b1f33;
+      --navy-2: #102c46;
+      --teal: #008c8c;
+      --teal-light: #e8f7f6;
+      --amber: #d9911e;
+      --amber-light: #fff6e6;
+      --green: #3f855c;
+      --green-light: #eaf5ee;
+      --blue: #2878b5;
+      --red: #b54b4b;
+      --text: #1f2933;
+      --muted: #607080;
+      --border: #d9e2e8;
+      --surface: #ffffff;
+      --background: #f4f7f9;
+      --shadow: 0 12px 34px rgba(11,31,51,.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behaviour: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        Aptos, "Segoe UI", Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(0, 140, 140, .25);
+      outline-offset: 3px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .shell {
+      width: min(100% - 32px, 960px);
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .brand {
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--teal);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      line-height: 1.1;
+    }
+
+    .subhead {
+      max-width: 720px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: clamp(24px, 5vw, 42px);
+    }
+
+    .notice {
+      margin: 20px 0;
+      padding: 16px 18px;
+      border-radius: 12px;
+      background: var(--amber-light);
+      border: 1px solid #efd29a;
+      color: #6e4a0d;
+    }
+
+    .privacy-note {
+      margin-top: 8px;
+      font-size: .87rem;
+      color: var(--muted);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .required {
+      color: var(--red);
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 13px;
+      background: #fff;
+      border: 1px solid #bdcad3;
+      border-radius: 10px;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--teal);
+    }
+
+    .field-error {
+      min-height: 18px;
+      color: var(--red);
+      font-size: .82rem;
+    }
+
+    .btn {
+      min-height: 46px;
+      padding: 11px 20px;
+      border: 0;
+      border-radius: 11px;
+      font-weight: 750;
+      transition:
+        transform .14s ease,
+        background-color .14s ease,
+        border-color .14s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #007575;
+    }
+
+    .btn-dark {
+      background: var(--navy);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--navy);
+      border: 1px solid #bcc9d2;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .intro-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .stat-box {
+      padding: 17px;
+      border-radius: 12px;
+      background: #f6f9fa;
+    }
+
+    .stat-box strong {
+      display: block;
+      color: var(--navy);
+      font-size: 1.25rem;
+    }
+
+    .stat-box span {
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    /* Quiz */
+
+    .quiz-header {
+      margin-bottom: 18px;
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 9px;
+      font-size: .9rem;
+    }
+
+    #sectionName {
+      color: var(--teal);
+      font-weight: 800;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dce4e9;
+    }
+
+    #progressBar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), #31bab5);
+      transition: width .25s ease;
+    }
+
+    .signal-name {
+      margin-bottom: 12px;
+      color: var(--amber);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    #questionText {
+      color: var(--navy);
+      font-size: clamp(1.35rem, 3vw, 1.8rem);
+      line-height: 1.28;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+      margin-top: 27px;
+    }
+
+    .choice {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 13px;
+
+      width: 100%;
+      padding: 15px;
+
+      text-align: left;
+      color: var(--text);
+
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+
+      transition:
+        background .13s ease,
+        border-color .13s ease,
+        transform .13s ease;
+    }
+
+    .choice:hover {
+      border-color: var(--teal);
+      transform: translateX(2px);
+    }
+
+    .choice.selected {
+      background: var(--teal-light);
+      border: 2px solid var(--teal);
+    }
+
+    .choice-number {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #b9c6cf;
+      border-radius: 50%;
+      font-size: .85rem;
+      font-weight: 800;
+    }
+
+    .choice.selected .choice-number {
+      color: white;
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+
+    #questionError {
+      min-height: 20px;
+      margin-top: 12px;
+      color: var(--red);
+      font-size: .88rem;
+    }
+
+    /* Results */
+
+    .result-hero {
+      padding: clamp(26px, 5vw, 42px);
+      color: white;
+      background:
+        linear-gradient(135deg, #081a2b, var(--navy-2));
+    }
+
+    .result-hero .eyebrow {
+      color: #6ce0d7;
+    }
+
+    .result-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    #classification {
+      margin-bottom: 8px;
+      color: white;
+      font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    #resultSummary {
+      max-width: 640px;
+      margin-bottom: 0;
+      color: #ccd8e1;
+    }
+
+    .score-block {
+      min-width: 160px;
+      text-align: right;
+    }
+
+    #overallScore {
+      color: #ffc55b;
+      font-size: 3.3rem;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .score-caption {
+      margin-top: 7px;
+      color: #b8c8d4;
+      font-size: .8rem;
+    }
+
+    .result-body {
+      padding: clamp(24px, 5vw, 40px);
+    }
+
+    .respondent-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 18px;
+      margin-bottom: 30px;
+      background: #f4f7f9;
+      border-radius: 12px;
+    }
+
+    .respondent-summary small {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+    }
+
+    .respondent-summary strong {
+      color: var(--navy);
+    }
+
+    .dimension-list {
+      display: grid;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .dimension-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 7px;
+      font-size: .93rem;
+    }
+
+    .dimension-head strong {
+      color: var(--navy);
+    }
+
+    .dimension-track {
+      height: 9px;
+      overflow: hidden;
+      background: #e2e8ec;
+      border-radius: 999px;
+    }
+
+    .dimension-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .high {
+      background: var(--teal);
+    }
+
+    .medium {
+      background: var(--blue);
+    }
+
+    .development {
+      background: var(--amber);
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .insight-card {
+      padding: 20px;
+      border-radius: 13px;
+    }
+
+    .strength-card {
+      background: var(--teal-light);
+    }
+
+    .development-card {
+      background: var(--amber-light);
+    }
+
+    .insight-label {
+      margin-bottom: 5px;
+      font-size: .73rem;
+      font-weight: 850;
+      letter-spacing: .1em;
+    }
+
+    .strength-card .insight-label {
+      color: #06736f;
+    }
+
+    .development-card .insight-label {
+      color: #94600e;
+    }
+
+    .insight-card h3 {
+      margin-bottom: 8px;
+      color: var(--navy);
+    }
+
+    .insight-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .recommendation {
+      margin-top: 30px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border);
+    }
+
+    .recommendation h3 {
+      color: var(--navy);
+    }
+
+    #recommendationText {
+      color: var(--muted);
+    }
+
+    .challenge-box {
+      padding: 22px;
+      margin-top: 16px;
+      color: white;
+      background: var(--navy);
+      border-radius: 14px;
+    }
+
+    .challenge-box p {
+      margin: 7px 0 0;
+      color: #cad7e0;
+    }
+
+    .governance-box {
+      padding: 16px 18px;
+      margin-top: 20px;
+      color: #435463;
+      background: #eef3f6;
+      border-radius: 12px;
+      font-size: .86rem;
+    }
+
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 700px) {
+      .field-grid,
+      .intro-stats,
+      .insight-grid,
+      .respondent-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .result-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .score-block {
+        text-align: left;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .brand,
+      .result-actions,
+      #identificationPage,
+      #introPage,
+      #quizPage {
+        display: none !important;
+      }
+
+      #resultsPage {
+        display: block !important;
+      }
+
+      .shell {
+        width: 100%;
+        padding: 0;
+      }
+
+      .card {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<main class="shell">
+
+  <header class="brand">
+    <p class="eyebrow">AI TRANSFORMATION TALENT DISCOVERY</p>
+    <h1>Transformation Catalyst Assessment</h1>
+    <p class="subhead">
+      Discover employees who can find meaningful problems, experiment
+      intelligently, influence colleagues and turn learning into
+      organizational improvement.
+    </p>
+  </header>
+
+  <!-- =======================================================
+       PAGE 1: RESPONDENT IDENTIFICATION
+       ======================================================= -->
+
+  <section id="identificationPage" class="card panel">
+
+    <p class="eyebrow">STEP 1 OF 3</p>
+
+    <h2>Tell us about yourself</h2>
+
+    <p>
+      Please enter your details before beginning the assessment.
+      Your identity is shown with the final result.
+    </p>
+
+    <div class="notice">
+      <strong>Important:</strong>
+      This assessment is designed to identify potential transformation
+      catalysts. It is not an employee performance appraisal and should
+      not be used on its own for promotion, compensation or employment decisions.
+    </div>
+
+    <form id="identityForm" novalidate>
+
+      <div class="field-grid">
+
+        <div class="field">
+          <label for="respondentName">
+            Name <span class="required">*</span>
+          </label>
+
+          <input
+            id="respondentName"
+            name="respondentName"
+            type="text"
+            maxlength="100"
+            autocomplete="name"
+            required
+            placeholder="e.g. Alex Tan">
+
+          <span id="nameError" class="field-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="designation">
+            Designation <span class="required">*</span>
+          </label>
+
+          <input
+            id="designation"
+            name="designation"
+            type="text"
+            maxlength="100"
+            required
+            placeholder="e.g. Operations Manager">
+
+          <span id="designationError" class="field-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="department">Department</label>
+
+          <input
+            id="department"
+            name="department"
+            type="text"
+            maxlength="100"
+            placeholder="e.g. Supply Chain">
+        </div>
+
+        <div class="field">
+          <label for="yearsService">Years with organization</label>
+
+          <select id="yearsService" name="yearsService">
+            <option value="">Prefer not to say</option>
+            <option>Less than 1 year</option>
+            <option>1–3 years</option>
+            <option>4–7 years</option>
+            <option>8–12 years</option>
+            <option>More than 12 years</option>
+          </select>
+        </div>
+
+      </div>
+
+      <p class="privacy-note">
+        This standalone version processes responses entirely within the
+        current browser session and does not send respondent information
+        to a server.
+      </p>
+
+      <div class="action-row">
+        <span></span>
+
+        <button type="submit" class="btn btn-primary">
+          Continue
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+
+  <!-- =======================================================
+       PAGE 2: INTRODUCTION
+       ======================================================= -->
+
+  <section id="introPage" class="card panel hidden">
+
+    <p class="eyebrow">STEP 2 OF 3</p>
+
+    <h2>What this assessment looks for</h2>
+
+    <p>
+      This is not an AI knowledge test. We are looking for behaviours
+      associated with people who can help an organization discover,
+      test and scale better ways of working.
+    </p>
+
+    <div class="intro-stats">
+
+      <div class="stat-box">
+        <strong>25</strong>
+        <span>behavioural questions</span>
+      </div>
+
+      <div class="stat-box">
+        <strong>7</strong>
+        <span>transformation signals</span>
+      </div>
+
+      <div class="stat-box">
+        <strong>8–10 min</strong>
+        <span>estimated completion time</span>
+      </div>
+
+    </div>
+
+    <div class="notice">
+      Answer according to what you would <strong>normally do</strong>,
+      not what you think leadership wants to hear.
+      There is no requirement to be an AI expert.
+    </div>
+
+    <p>
+      The assessment examines:
+    </p>
+
+    <ul>
+      <li>Healthy dissatisfaction with inefficient work</li>
+      <li>Business and process judgement</li>
+      <li>Experimentation and learning agility</li>
+      <li>Organizational knowledge</li>
+      <li>Influence without formal authority</li>
+      <li>Ability to multiply learning across others</li>
+      <li>Responsible judgement when using AI</li>
+    </ul>
+
+    <div class="action-row">
+
+      <button
+        type="button"
+        id="backToIdentity"
+        class="btn btn-secondary">
+        Back
+      </button>
+
+      <button
+        type="button"
+        id="startAssessment"
+        class="btn btn-primary">
+        Start assessment
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- =======================================================
+       PAGE 3: ASSESSMENT
+       ======================================================= -->
+
+  <section id="quizPage" class="hidden">
+
+    <div class="quiz-header">
+
+      <div class="progress-meta">
+
+        <span id="progressText">
+          Question 1 of 25
+        </span>
+
+        <span id="sectionName"></span>
+
+      </div>
+
+      <div
+        class="progress-track"
+        role="progressbar"
+        aria-label="Assessment progress"
+        aria-valuemin="0"
+        aria-valuemax="100">
+
+        <div id="progressBar"></div>
+
+      </div>
+
+    </div>
+
+    <div class="card panel">
+
+      <div id="signalName" class="signal-name"></div>
+
+      <h2 id="questionText"></h2>
+
+      <div
+        id="choices"
+        class="choices"
+        role="radiogroup"
+        aria-labelledby="questionText">
+      </div>
+
+      <div
+        id="questionError"
+        aria-live="polite">
+      </div>
+
+      <div class="action-row">
+
+        <button
+          type="button"
+          id="previousQuestion"
+          class="btn btn-secondary">
+          Back
+        </button>
+
+        <button
+          type="button"
+          id="nextQuestion"
+          class="btn btn-dark"
+          disabled>
+          Next
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- =======================================================
+       PAGE 4: RESULTS
+       ======================================================= -->
+
+  <section id="resultsPage" class="card hidden">
+
+    <div class="result-hero">
+
+      <p class="eyebrow">YOUR TRANSFORMATION PROFILE</p>
+
+      <div class="result-top">
+
+        <div>
+
+          <h2 id="classification"></h2>
+
+          <p id="resultSummary"></p>
+
+        </div>
+
+        <div class="score-block">
+
+          <div id="overallScore"></div>
+
+          <div class="score-caption">
+            Transformation Catalyst Score
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="result-body">
+
+      <div class="respondent-summary">
+
+        <div>
+          <small>Name</small>
+          <strong id="resultName"></strong>
+        </div>
+
+        <div>
+          <small>Designation</small>
+          <strong id="resultDesignation"></strong>
+        </div>
+
+        <div>
+          <small>Department</small>
+          <strong id="resultDepartment"></strong>
+        </div>
+
+      </div>
+
+      <h3>Your seven transformation signals</h3>
+
+      <div id="dimensionResults" class="dimension-list"></div>
+
+      <div class="insight-grid">
+
+        <div class="insight-card strength-card">
+
+          <div class="insight-label">
+            STRONGEST SIGNAL
+          </div>
+
+          <h3 id="strongestSignal"></h3>
+
+          <p id="strongestDescription"></p>
+
+        </div>
+
+        <div class="insight-card development-card">
+
+          <div class="insight-label">
+            DEVELOPMENT OPPORTUNITY
+          </div>
+
+          <h3 id="developmentSignal"></h3>
+
+          <p id="developmentDescription"></p>
+
+        </div>
+
+      </div>
+
+      <div class="recommendation">
+
+        <h3>Recommended next step</h3>
+
+        <p id="recommendationText"></p>
+
+        <div class="challenge-box">
+
+          <strong>Practical Transformation Challenge</strong>
+
+          <p>
+            Select one real frustration in your work.
+            Establish the current baseline, identify the knowledge required,
+            determine whether AI is appropriate, run a controlled test,
+            involve at least two colleagues, measure what changed and recommend:
+            <strong>Stop, Refine or Scale.</strong>
+          </p>
+
+        </div>
+
+        <div class="governance-box">
+          <strong>Interpretation note:</strong>
+          This score indicates behavioural potential for leading change.
+          It should be validated through peer observations, manager observations
+          and demonstrated behaviour in a real experiment before someone is
+          appointed as an AI Transformation Catalyst.
+        </div>
+
+      </div>
+
+      <div class="result-actions">
+
+        <button
+          type="button"
+          id="printResult"
+          class="btn btn-primary">
+          Print / Save Result
+        </button>
+
+        <button
+          type="button"
+          id="retake"
+          class="btn btn-secondary">
+          Retake Assessment
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <div
+    id="liveRegion"
+    class="sr-only"
+    aria-live="polite">
+  </div>
+
+</main>
+
+<script>
+(() => {
+
+  "use strict";
+
+  /* =========================================================
+     ASSESSMENT MODEL
+     ========================================================= */
+
+  const signals = {
+
+    dissatisfaction: {
+      name: "Healthy dissatisfaction",
+      weight: 15,
+      description:
+        "You notice unnecessary friction and are willing to question established ways of working constructively."
+    },
+
+    judgement: {
+      name: "Business judgement",
+      weight: 15,
+      description:
+        "You connect technology and change to meaningful operational and business outcomes."
+    },
+
+    experimentation: {
+      name: "Experimentation & learning",
+      weight: 15,
+      description:
+        "You test ideas, examine evidence and adapt rather than waiting for certainty."
+    },
+
+    knowledge: {
+      name: "Organizational knowledge",
+      weight: 10,
+      description:
+        "You understand how work really happens across people, processes, knowledge and systems."
+    },
+
+    influence: {
+      name: "Influence without authority",
+      weight: 20,
+      description:
+        "You can bring colleagues into change through involvement, credibility and evidence rather than hierarchy."
+    },
+
+    multiplier: {
+      name: "Learning multiplier",
+      weight: 15,
+      description:
+        "You turn personal learning into reusable approaches that help other people become more capable."
+    },
+
+    responsibility: {
+      name: "Responsible judgement",
+      weight: 10,
+      description:
+        "You balance experimentation with verification, security, risk awareness and human accountability."
+    }
+
+  };
+
+
+  /* =========================================================
+     QUESTIONS
+
+     Answer position = score:
+     1 = weakest transformation signal
+     5 = strongest transformation signal
+
+     Do not display scores during the assessment.
+     ========================================================= */
+
+  const questions = [
+
+    {
+      signal: "dissatisfaction",
+      text:
+        "When you encounter an inefficient process, what do you normally do?",
+      choices: [
+        "Work around it and continue",
+        "Mention the problem to colleagues",
+        "Raise it with my manager",
+        "Suggest a practical improvement",
+        "Test or help implement a better approach"
+      ]
+    },
+
+    {
+      signal: "dissatisfaction",
+      text:
+        "How frequently do you question whether an established way of working could be improved?",
+      choices: [
+        "Rarely",
+        "Occasionally",
+        "Sometimes",
+        "Frequently",
+        "Very frequently"
+      ]
+    },
+
+    {
+      signal: "dissatisfaction",
+      text:
+        "A process is frustrating but technically still works. What are you most likely to do?",
+      choices: [
+        "Accept it",
+        "Work around it personally",
+        "Document the problem",
+        "Propose a better way",
+        "Gather evidence and test an improvement"
+      ]
+    },
+
+    {
+      signal: "judgement",
+      text:
+        "Your department can test only one AI opportunity. What would you prioritize?",
+      choices: [
+        "The opportunity using the most advanced AI",
+        "The opportunity employees find most interesting",
+        "The opportunity that is easiest to implement",
+        "An important operational problem",
+        "A measurable business problem with a realistic improvement path"
+      ]
+    },
+
+    {
+      signal: "judgement",
+      text:
+        "Before applying AI to a process, how important is understanding how the current process actually works?",
+      choices: [
+        "Not important",
+        "Slightly important",
+        "Moderately important",
+        "Very important",
+        "Essential"
+      ]
+    },
+
+    {
+      signal: "judgement",
+      text:
+        "Which outcome provides the strongest evidence that an AI initiative has succeeded?",
+      choices: [
+        "AI has been deployed",
+        "Employees have started using it",
+        "Users report that it saves time",
+        "A workflow has measurably improved",
+        "A meaningful business outcome has improved sustainably"
+      ]
+    },
+
+    {
+      signal: "judgement",
+      text:
+        "When should you decide that AI is not the right solution?",
+      choices: [
+        "Almost never",
+        "Only when AI is too expensive",
+        "When employees do not like the tool",
+        "When a simpler solution solves the problem better",
+        "When evidence, value or risk does not justify using AI"
+      ]
+    },
+
+    {
+      signal: "experimentation",
+      text:
+        "When you discover a potentially useful new tool or method, what are you most likely to do?",
+      choices: [
+        "Wait until the organization formally introduces it",
+        "Read about it",
+        "Ask whether other people have tried it",
+        "Test it on a small, low-risk task",
+        "Design a small experiment and compare it with the existing approach"
+      ]
+    },
+
+    {
+      signal: "experimentation",
+      text:
+        "When an experiment does not produce the expected result, what do you normally do?",
+      choices: [
+        "Stop",
+        "Conclude that the idea does not work",
+        "Ask someone else for the answer",
+        "Examine what went wrong and try a different approach",
+        "Review the evidence, change the hypothesis, retest and document what was learned"
+      ]
+    },
+
+    {
+      signal: "experimentation",
+      text:
+        "How comfortable are you beginning a small experiment without knowing the final answer?",
+      choices: [
+        "Very uncomfortable",
+        "Uncomfortable",
+        "Neutral",
+        "Comfortable",
+        "Very comfortable when the boundaries and success measures are clear"
+      ]
+    },
+
+    {
+      signal: "experimentation",
+      text:
+        "An AI experiment produces a promising first result. What should happen next?",
+      choices: [
+        "Assume the solution works",
+        "Share the success",
+        "Continue using it personally",
+        "Repeat the experiment",
+        "Retest under different conditions and actively look for limitations or failure modes"
+      ]
+    },
+
+    {
+      signal: "knowledge",
+      text:
+        "How often do colleagues approach you when documented procedures do not provide the answer?",
+      choices: [
+        "Almost never",
+        "Occasionally",
+        "Sometimes",
+        "Frequently",
+        "Very frequently"
+      ]
+    },
+
+    {
+      signal: "knowledge",
+      text:
+        "How broadly do you understand the processes surrounding your own work?",
+      choices: [
+        "Primarily my own tasks",
+        "My immediate dependencies",
+        "My team's overall process",
+        "Several connected teams and processes",
+        "The end-to-end process, including decisions, people, knowledge and systems"
+      ]
+    },
+
+    {
+      signal: "knowledge",
+      text:
+        "When a process repeatedly breaks, how do you normally investigate the problem?",
+      choices: [
+        "Fix my part of the process",
+        "Ask my manager",
+        "Check the documented procedure",
+        "Trace upstream and downstream dependencies",
+        "Trace the workflow, decision points, knowledge sources, people and systems involved"
+      ]
+    },
+
+    {
+      signal: "influence",
+      text:
+        "When you discover a better way of working, what typically happens?",
+      choices: [
+        "I use it myself",
+        "I tell a few colleagues",
+        "I demonstrate it when someone asks",
+        "I proactively help colleagues try it",
+        "Colleagues adopt it and begin improving it themselves"
+      ]
+    },
+
+    {
+      signal: "influence",
+      text:
+        "How comfortable are you challenging an established process when more senior colleagues support the current approach?",
+      choices: [
+        "Very uncomfortable",
+        "Uncomfortable",
+        "It depends on the situation",
+        "Comfortable when I have evidence",
+        "Comfortable presenting evidence while remaining open to the possibility that I may be wrong"
+      ]
+    },
+
+    {
+      signal: "influence",
+      text:
+        "A colleague strongly resists a change you believe is worthwhile. What do you normally do?",
+      choices: [
+        "Push ahead with the change",
+        "Escalate the issue to management",
+        "Drop the idea",
+        "Try to understand the concern and adjust the approach",
+        "Understand the concern, involve the colleague in the experiment and use evidence to decide"
+      ]
+    },
+
+    {
+      signal: "influence",
+      text:
+        "What best describes how you gain support for a new way of working?",
+      choices: [
+        "Rely on authority",
+        "Explain that management wants the change",
+        "Explain the expected benefits",
+        "Demonstrate benefits using practical examples",
+        "Involve people in solving the problem and allow evidence to build support"
+      ]
+    },
+
+    {
+      signal: "influence",
+      text:
+        "After you stop personally pushing an improvement, what outcome would indicate that real change has occurred?",
+      choices: [
+        "I continue using the improvement",
+        "People remember the idea",
+        "Management mandates the new approach",
+        "Colleagues continue using it",
+        "Colleagues continue using and improving it without depending on me"
+      ]
+    },
+
+    {
+      signal: "multiplier",
+      text:
+        "When you discover a useful technique, what do you normally do?",
+      choices: [
+        "Keep using it personally",
+        "Mention it when relevant",
+        "Show interested colleagues",
+        "Create something reusable such as a guide, template or checklist",
+        "Help others adopt it, gather feedback and improve the reusable method"
+      ]
+    },
+
+    {
+      signal: "multiplier",
+      text:
+        "How often do colleagues reuse methods, templates, guides or approaches that you created?",
+      choices: [
+        "Almost never",
+        "Occasionally",
+        "Sometimes",
+        "Frequently",
+        "They have become part of normal team practice"
+      ]
+    },
+
+    {
+      signal: "multiplier",
+      text:
+        "What is the strongest evidence that knowledge has been successfully transferred?",
+      choices: [
+        "I understand it",
+        "I explained it",
+        "People attended training",
+        "Other people can repeat the technique",
+        "Other people can apply, adapt and teach it without depending on me"
+      ]
+    },
+
+    {
+      signal: "responsibility",
+      text:
+        "An AI-generated answer looks convincing but you cannot verify its source. What do you do?",
+      choices: [
+        "Use it because it looks credible",
+        "Use it but disclose that AI generated it",
+        "Ask the AI whether it is confident",
+        "Verify important claims against trusted sources",
+        "Verify the claims and assess the consequences if the answer is wrong before using it"
+      ]
+    },
+
+    {
+      signal: "responsibility",
+      text:
+        "An AI method promises major productivity gains but requires sensitive organizational information. What do you do?",
+      choices: [
+        "Try it because the potential benefit is significant",
+        "Remove obvious sensitive details and test it",
+        "Ask a colleague whether it appears safe",
+        "Check organizational policy and approved tools before proceeding",
+        "Determine data classification, permissions, risk and the approved environment before designing the experiment"
+      ]
+    },
+
+    {
+      signal: "responsibility",
+      text:
+        "Who should remain accountable for a material business decision supported by AI?",
+      choices: [
+        "The AI vendor",
+        "The AI system",
+        "The technical team",
+        "The employee operating the AI",
+        "A clearly identified human decision owner"
+      ]
+    }
+
+  ];
+
+
+  /* =========================================================
+     STATE
+     ========================================================= */
+
+  let currentQuestion = 0;
+
+  let answers =
+    new Array(questions.length).fill(null);
+
+  let respondent = {
+    name: "",
+    designation: "",
+    department: "",
+    yearsService: ""
+  };
+
+
+  /* =========================================================
+     HELPERS
+     ========================================================= */
+
+  const byId = id =>
+    document.getElementById(id);
+
+
+  function showPage(pageId) {
+
+    [
+      "identificationPage",
+      "introPage",
+      "quizPage",
+      "resultsPage"
+    ].forEach(id => {
+      byId(id).classList.toggle("hidden", id !== pageId);
+    });
+
+    window.scrollTo({
+      top: 0,
+      behaviour: "smooth"
+    });
+
+  }
+
+
+  /* =========================================================
+     IDENTIFICATION
+     ========================================================= */
+
+  byId("identityForm").addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      const name =
+        byId("respondentName").value.trim();
+
+      const designation =
+        byId("designation").value.trim();
+
+      const department =
+        byId("department").value.trim();
+
+      const yearsService =
+        byId("yearsService").value;
+
+      byId("nameError").textContent = "";
+      byId("designationError").textContent = "";
+
+      let valid = true;
+
+      if (name.length < 2) {
+
+        byId("nameError").textContent =
+          "Please enter your name.";
+
+        valid = false;
+      }
+
+      if (designation.length < 2) {
+
+        byId("designationError").textContent =
+          "Please enter your designation.";
+
+        valid = false;
+      }
+
+      if (!valid) {
+        return;
+      }
+
+      respondent = {
+        name,
+        designation,
+        department,
+        yearsService
+      };
+
+      showPage("introPage");
+
+    }
+  );
+
+
+  byId("backToIdentity").addEventListener(
+    "click",
+    () => showPage("identificationPage")
+  );
+
+
+  byId("startAssessment").addEventListener(
+    "click",
+    () => {
+
+      currentQuestion = 0;
+
+      showPage("quizPage");
+
+      renderQuestion();
+
+    }
+  );
+
+
+  /* =========================================================
+     QUESTION RENDERING
+     ========================================================= */
+
+  function renderQuestion() {
+
+    const question =
+      questions[currentQuestion];
+
+    const signal =
+      signals[question.signal];
+
+    byId("progressText").textContent =
+      `Question ${currentQuestion + 1} of ${questions.length}`;
+
+    byId("sectionName").textContent =
+      signal.name;
+
+    byId("signalName").textContent =
+      signal.name;
+
+    byId("questionText").textContent =
+      question.text;
+
+    const progress =
+      ((currentQuestion + 1) / questions.length) * 100;
+
+    byId("progressBar").style.width =
+      `${progress}%`;
+
+    byId("progressBar")
+      .parentElement
+      .setAttribute(
+        "aria-valuenow",
+        String(Math.round(progress))
+      );
+
+    const choiceContainer =
+      byId("choices");
+
+    choiceContainer.innerHTML = "";
+
+    question.choices.forEach(
+      (choiceText, index) => {
+
+        const score =
+          index + 1;
+
+        const button =
+          document.createElement("button");
+
+        button.type =
+          "button";
+
+        button.className =
+          "choice";
+
+        button.setAttribute(
+          "role",
+          "radio"
+        );
+
+        button.setAttribute(
+          "aria-checked",
+          answers[currentQuestion] === score
+            ? "true"
+            : "false"
+        );
+
+        if (
+          answers[currentQuestion] === score
+        ) {
+
+          button.classList.add("selected");
+        }
+
+        const number =
+          document.createElement("span");
+
+        number.className =
+          "choice-number";
+
+        number.textContent =
+          String(score);
+
+        const text =
+          document.createElement("span");
+
+        text.textContent =
+          choiceText;
+
+        button.append(
+          number,
+          text
+        );
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            answers[currentQuestion] =
+              score;
+
+            byId("questionError")
+              .textContent = "";
+
+            renderQuestion();
+
+          }
+        );
+
+        choiceContainer.appendChild(
+          button
+        );
+
+      }
+    );
+
+    byId("previousQuestion").style.visibility =
+      currentQuestion === 0
+        ? "hidden"
+        : "visible";
+
+    byId("nextQuestion").disabled =
+      answers[currentQuestion] === null;
+
+    byId("nextQuestion").textContent =
+      currentQuestion === questions.length - 1
+        ? "View my results"
+        : "Next";
+
+  }
+
+
+  /* =========================================================
+     QUESTION NAVIGATION
+     ========================================================= */
+
+  byId("previousQuestion").addEventListener(
+    "click",
+    () => {
+
+      if (currentQuestion > 0) {
+
+        currentQuestion--;
+
+        renderQuestion();
+
+      }
+
+    }
+  );
+
+
+  byId("nextQuestion").addEventListener(
+    "click",
+    () => {
+
+      if (
+        answers[currentQuestion] === null
+      ) {
+
+        byId("questionError")
+          .textContent =
+          "Please select an answer before continuing.";
+
+        return;
+      }
+
+      if (
+        currentQuestion <
+        questions.length - 1
+      ) {
+
+        currentQuestion++;
+
+        renderQuestion();
+
+      } else {
+
+        calculateResults();
+
+      }
+
+    }
+  );
+
+
+  /* =========================================================
+     SCORING
+     ========================================================= */
+
+  function calculateResults() {
+
+    const totals = {};
+    const counts = {};
+
+    Object.keys(signals).forEach(
+      key => {
+
+        totals[key] = 0;
+        counts[key] = 0;
+
+      }
+    );
+
+    questions.forEach(
+      (question, index) => {
+
+        const value =
+          answers[index] ?? 0;
+
+        totals[question.signal] +=
+          value;
+
+        counts[question.signal]++;
+
+      }
+    );
+
+    const dimensionScores = [];
+
+    let weightedTotal = 0;
+
+    Object.keys(signals).forEach(
+      key => {
+
+        const average =
+          totals[key] /
+          counts[key];
+
+        const percentage =
+          (average / 5) * 100;
+
+        weightedTotal +=
+          percentage *
+          (signals[key].weight / 100);
+
+        dimensionScores.push({
+          key,
+          percentage
+        });
+
+      }
+    );
+
+    const overall =
+      Math.round(weightedTotal);
+
+    renderResults(
+      overall,
+      dimensionScores
+    );
+
+  }
+
+
+  /* =========================================================
+     CLASSIFICATION MODEL
+     ========================================================= */
+
+  function classify(score) {
+
+    if (score >= 85) {
+
+      return {
+        name: "Transformation Catalyst",
+
+        summary:
+          "Your responses show strong evidence of the behaviours needed to identify meaningful problems, experiment intelligently and influence other people to adopt better ways of working.",
+
+        recommendation:
+          "Move to practical validation. Give this candidate ownership of a real, measurable AI-enabled workflow experiment involving other employees and an accountable business sponsor."
+      };
+
+    }
+
+    if (score >= 70) {
+
+      return {
+        name: "Emerging Catalyst",
+
+        summary:
+          "You demonstrate several strong transformation behaviours, although some capabilities should be developed and verified through practical experimentation.",
+
+        recommendation:
+          "Include this candidate in an AI experimentation cohort. Pair the candidate with an experienced sponsor and give the candidate ownership of a contained workflow improvement."
+      };
+
+    }
+
+    if (score >= 55) {
+
+      return {
+        name: "Transformation Contributor",
+
+        summary:
+          "You can contribute meaningfully to AI-enabled change, although your current responses do not yet demonstrate consistent catalyst behaviour across all seven dimensions.",
+
+        recommendation:
+          "Use this candidate as a subject-matter expert or experiment team member. Focus development on the lowest-scoring transformation behaviours before assigning change leadership."
+      };
+
+    }
+
+    return {
+      name: "Transformation Participant",
+
+      summary:
+        "This result does not indicate poor job performance. It indicates that your current responses show limited evidence of the behaviours associated with independently leading transformation.",
+
+      recommendation:
+        "Build practical AI literacy and involve this candidate in well-structured experiments. Provide opportunities to practise experimentation, knowledge sharing and influencing change."
+    };
+
+  }
+
+
+  /* =========================================================
+     RESULTS
+     ========================================================= */
+
+  function renderResults(
+    score,
+    dimensionScores
+  ) {
+
+    const result =
+      classify(score);
+
+    byId("classification")
+      .textContent =
+      result.name;
+
+    byId("resultSummary")
+      .textContent =
+      result.summary;
+
+    byId("overallScore")
+      .textContent =
+      `${score}/100`;
+
+    byId("resultName")
+      .textContent =
+      respondent.name;
+
+    byId("resultDesignation")
+      .textContent =
+      respondent.designation;
+
+    byId("resultDepartment")
+      .textContent =
+      respondent.department ||
+      "Not specified";
+
+    /* Dimension bars */
+
+    const dimensionContainer =
+      byId("dimensionResults");
+
+    dimensionContainer.innerHTML =
+      "";
+
+    Object.keys(signals).forEach(
+      key => {
+
+        const dimension =
+          dimensionScores.find(
+            item => item.key === key
+          );
+
+        const rounded =
+          Math.round(
+            dimension.percentage
+          );
+
+        const wrapper =
+          document.createElement("div");
+
+        const barClass =
+          rounded >= 80
+            ? "high"
+            : rounded >= 65
+              ? "medium"
+              : "development";
+
+        wrapper.innerHTML = `
+          <div class="dimension-head">
+            <strong>${escapeHtml(signals[key].name)}</strong>
+            <span>${rounded}/100 · Weight ${signals[key].weight}%</span>
+          </div>
+
+          <div class="dimension-track">
+            <div
+              class="dimension-fill ${barClass}"
+              style="width:${rounded}%">
+            </div>
+          </div>
+        `;
+
+        dimensionContainer.appendChild(
+          wrapper
+        );
+
+      }
+    );
+
+    /* Highest and lowest dimensions */
+
+    const ranked =
+      [...dimensionScores].sort(
+        (a, b) =>
+          b.percentage -
+          a.percentage
+      );
+
+    const highest =
+      ranked[0];
+
+    const lowest =
+      ranked[
+        ranked.length - 1
+      ];
+
+    byId("strongestSignal")
+      .textContent =
+      signals[highest.key].name;
+
+    byId("strongestDescription")
+      .textContent =
+      signals[highest.key].description;
+
+    byId("developmentSignal")
+      .textContent =
+      signals[lowest.key].name;
+
+    byId("developmentDescription")
+      .textContent =
+      buildDevelopmentRecommendation(
+        lowest.key
+      );
+
+    byId("recommendationText")
+      .textContent =
+      result.recommendation;
+
+    showPage("resultsPage");
+
+    byId("liveRegion")
+      .textContent =
+      `Assessment complete. ${result.name}. Score ${score} out of 100.`;
+
+  }
+
+
+  /* =========================================================
+     PERSONALIZED DEVELOPMENT RECOMMENDATIONS
+     ========================================================= */
+
+  function buildDevelopmentRecommendation(
+    signalKey
+  ) {
+
+    const recommendations = {
+
+      dissatisfaction:
+        "Practise identifying specific friction in existing workflows. Move from describing frustration to defining the problem, its impact and one improvement worth testing.",
+
+      judgement:
+        "Strengthen the connection between AI ideas and measurable business outcomes. Before proposing AI, define the problem, baseline, target and reasons AI is preferable to a simpler solution.",
+
+      experimentation:
+        "Create more opportunities for small, safe experiments. Form a hypothesis, establish a baseline, test, inspect evidence and explicitly record what changed after the first attempt.",
+
+      knowledge:
+        "Develop a broader end-to-end view of work. Trace how tasks connect to upstream information, downstream decisions, subject-matter experts, policies and systems.",
+
+      influence:
+        "Develop change leadership through involvement rather than authority. Bring colleagues into problem definition and experimentation so that adoption emerges from evidence and participation.",
+
+      multiplier:
+        "Turn personal discoveries into organizational assets. Create guides, templates, prompts or checklists, then observe whether colleagues can use and improve them without continued dependency on you.",
+
+      responsibility:
+        "Strengthen verification and risk judgement. Practise checking sources, understanding data classifications, considering the consequence of error and identifying the human decision owner before operational use."
+
+    };
+
+    return recommendations[signalKey];
+
+  }
+
+
+  /* =========================================================
+     BASIC HTML ESCAPING
+     ========================================================= */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  /* =========================================================
+     RESULTS ACTIONS
+     ========================================================= */
+
+  byId("printResult").addEventListener(
+    "click",
+    () => window.print()
+  );
+
+
+  byId("retake").addEventListener(
+    "click",
+    () => {
+
+      currentQuestion = 0;
+
+      answers =
+        new Array(
+          questions.length
+        ).fill(null);
+
+      showPage(
+        "identificationPage"
+      );
+
+      window.scrollTo(
+        0,
+        0
+      );
+
+    }
+  );
+
+})();
+</script>
+
+</body>
+</html>
